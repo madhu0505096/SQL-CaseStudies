@@ -89,3 +89,10 @@ VALUES
   ('A', '2021-01-07'),
   ('B', '2021-01-09');
 ```
+We can execute the SQL using dbfiddle["https://www.db-fiddle.com/f/mcnNXgFYpuDXB5fFQGhogs/1"]  
+
+__
+
+__Question 1: What is the total amount each customer spent at the restaurant?__
+
+
