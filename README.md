@@ -118,18 +118,17 @@ group by sales.customer_id;
 __Question 2. How many days has each customer visited the restaurant?__
 
 ```
+select 
 
-    select 
-    
-    sales.customer_id
-    ,count(sales.order_date)
-    
-    from 
-    
-    dannys_diner.sales
-    
-    
-    group by sales.customer_id, sales.order_date;
+sales.customer_id
+,count(sales.customer_id)
+
+from 
+
+dannys_diner.sales
+
+
+group by sales.customer_id;
 
 | customer_id | count |
 | ----------- | ----- |
@@ -146,7 +145,6 @@ __Question 2. How many days has each customer visited the restaurant?__
 | C           | 2     |
 | B           | 1     |
 
----
-
+```
 
 __Question 3. What was the first item from the menu purchased by each customer?__
