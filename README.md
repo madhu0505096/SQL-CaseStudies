@@ -117,34 +117,117 @@ group by sales.customer_id;
 ```
 __Question 2. How many days has each customer visited the restaurant?__
 
+Group the data by customer_id and use count aggregate function on customer_id to get the number of days a customer has visited the restaurant.
 ```
-select 
-
-sales.customer_id
-,count(sales.customer_id)
-
-from 
-
-dannys_diner.sales
-
-
-group by sales.customer_id;
+    select 
+    
+    sales.customer_id
+    ,count(sales.order_date)
+    
+    from 
+    
+    dannys_diner.sales
+    
+    
+    group by sales.customer_id;
 
 | customer_id | count |
 | ----------- | ----- |
-| C           | 1     |
-| B           | 1     |
-| B           | 1     |
-| A           | 2     |
-| B           | 1     |
-| A           | 1     |
-| A           | 1     |
-| B           | 1     |
-| A           | 2     |
-| B           | 1     |
+| B           | 6     |
+| C           | 3     |
+| A           | 6     |
+
+```
+But wait what if the customer has visited the restaurant more than once in a day so, let's check whether there are any records as such.
+
+```
+    select 
+    
+    sales.customer_id
+    ,sales.order_date
+    ,count(*)
+    from     
+    dannys_diner.sales  
+    
+    group by sales.customer_id,sales.order_date;
+
+| customer_id | order_date               | count |
+| ----------- | ------------------------ | ----- |
+| C           | 2021-01-07T00:00:00.000Z | 1     |
+| B           | 2021-01-01T00:00:00.000Z | 1     |
+| B           | 2021-02-01T00:00:00.000Z | 1     |
+| A           | 2021-01-01T00:00:00.000Z | 2     |
+| B           | 2021-01-16T00:00:00.000Z | 1     |
+| A           | 2021-01-10T00:00:00.000Z | 1     |
+| A           | 2021-01-07T00:00:00.000Z | 1     |
+| B           | 2021-01-02T00:00:00.000Z | 1     |
+| A           | 2021-01-11T00:00:00.000Z | 2     |
+| B           | 2021-01-04T00:00:00.000Z | 1     |
+| C           | 2021-01-01T00:00:00.000Z | 2     |
+| B           | 2021-01-11T00:00:00.000Z | 1     |
+
+```
+As you can see Customers A nd C has visited the restaurant twice in the same date so this should not be counted.
+
+To get the desired result, we can modify our first query by including just a distinct while counting the sales.order_date 
+
+```
+    select 
+        
+        sales.customer_id
+        ,count(distinct sales.order_date)
+        
+        from 
+        
+        dannys_diner.sales
+        
+        
+        group by sales.customer_id;
+
+| customer_id | count |
+| ----------- | ----- |
+| A           | 4     |
+| B           | 6     |
 | C           | 2     |
-| B           | 1     |
 
 ```
 
 __Question 3. What was the first item from the menu purchased by each customer?__
+
+The first item from the menu which was purchased by the customers can be found out by looking at the first order_date for each customer.
+As we know some customers came more than once on the same day we should make sure our query covers this scenario.
+```
+
+--Create a temperory table or CTE to hold the first ordered date result
+
+    with temp as (
+        select
+        sales.customer_id,sales.order_date,menu.product_name
+        ,rank()over(partition by sales.customer_id order by sales.order_date ) as order
+       
+       from 
+        
+        dannys_diner.sales
+        
+        join
+        
+        dannys_diner.menu
+        
+        on sales.product_id = menu.product_id
+        
+       )
+       
+       --Query the result from the temp table with desired filter
+       
+       select  * from temp where temp.order =1;
+
+| customer_id | order_date               | product_name | order |
+| ----------- | ------------------------ | ------------ | ----- |
+| A           | 2021-01-01T00:00:00.000Z | curry        | 1     |
+| A           | 2021-01-01T00:00:00.000Z | sushi        | 1     |
+| B           | 2021-01-01T00:00:00.000Z | curry        | 1     |
+| C           | 2021-01-01T00:00:00.000Z | ramen        | 1     |
+| C           | 2021-01-01T00:00:00.000Z | ramen        | 1     |
+
+```
+
