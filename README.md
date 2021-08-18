@@ -271,5 +271,59 @@ __Question5:Which item was the most popular for each customer?__
 
 The most popular item is the one which was bought by the customer the highest number of times.
 
+---
 
+
+
+    select 
+         	final.product_name
+           ,final.customer_id
+           ,final.NumberOfOrders
+     		from
+     
+     		(
+        
+      	    select 
+      	    a.product_name
+           ,a.customer_id
+           ,a.count as NumberOfOrders
+           ,rank()over(partition by a.customer_id order by a.count desc) as freq
+                                    
+           from 
+           
+           (  
+          
+           select 
+           menu.product_name
+           ,sales.customer_id
+           ,count(*) as count
+                  
+            from 
+            
+            dannys_diner.sales
+            
+            inner join
+            
+            dannys_diner.menu
+            
+            on sales.product_id = menu.product_id
+            
+            group by menu.product_name,sales.customer_id 
+            
+            order by customer_id asc,count desc
+         
+            
+            )a
+           
+           )final where final.freq=1;
+
+| product_name | customer_id | numberoforders |
+| ------------ | ----------- | -------------- |
+| ramen        | A           | 3              |
+| curry        | B           | 2              |
+| sushi        | B           | 2              |
+| ramen        | B           | 2              |
+| ramen        | C           | 3              |
+
+---
 
