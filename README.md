@@ -232,3 +232,44 @@ As we know some customers came more than once on the same day we should make sur
 
 ```
 
+__Question 4:What is the most purchased item on the menu and how many times was it purchased by all customers?__
+
+Join the sales and menu table using a inner join and use count aggregate function.
+
+```
+
+
+    select
+        menu.product_name
+        ,count(*)
+       
+       
+       from 
+        
+        dannys_diner.sales
+        
+        join
+        
+        dannys_diner.menu
+        
+        on sales.product_id = menu.product_id
+    
+     	group by menu.product_name;
+
+| product_name | count |
+| ------------ | ----- |
+| ramen        | 8     |
+| sushi        | 3     |
+| curry        | 4     |
+
+```
+
+
+Ramen is the most frequent and it was purchased 8 times by all customers combined.
+
+__Question5:Which item was the most popular for each customer?__
+
+The most popular item is the one which was bought by the customer the highest number of times.
+
+
+
