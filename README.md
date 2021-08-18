@@ -327,3 +327,8 @@ The most popular item is the one which was bought by the customer the highest nu
 
 ---
 
+__Question6: Which item was purchased first by the customer after they became a member?__  
+
+
+__Question7: Which item was purchased just before the customer became a member?__
+__Question8: What is the total items and amount spent for each member before they became a member?__
