@@ -196,9 +196,10 @@ __Question 3. What was the first item from the menu purchased by each customer?_
 
 The first item from the menu which was purchased by the customers can be found out by looking at the first order_date for each customer.
 As we know some customers came more than once on the same day we should make sure our query covers this scenario.
+
 ```
 
---Create a temperory table or CTE to hold the first ordered date result
+--Create a temprory table or CTE to hold the first ordered date result
 
     with temp as (
         select
