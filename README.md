@@ -493,7 +493,8 @@ __Question 10: In the first week after a customer joins the program (including t
 | B       | 700    |
 
 
-___
+____
+
 Bonus Question  
 TO get the desired answer as shown we need to follow the below steps,  
 1.We need all the three tables, so join all three but while joining the member table use a left join or else customer C records would be dropped  
@@ -507,7 +508,9 @@ TO get the desired answer as shown we need to follow the below steps,
         ,menu.product_name as product_name
         ,price    
         ,case when order_date<join_date then 'N'
-        else 'Y' end as member      
+        when order_date>=join_date then 'Y'
+        when join_date is null then 'N'
+        end as member     
         FROM 
         dannys_diner.menu
         inner join 
@@ -540,6 +543,175 @@ TO get the desired answer as shown we need to follow the below steps,
 
 
 
+___
+**Rank All The Things**
+
+To get rank for only the members and null vaue for non-members we create two seperate queries and union them.
+
+
+**Non-Members**
+```
+	SELECT 
+	customer_id
+	,order_date
+	,product_name
+	,price
+	,member
+	,cast(NULL as int) as ranking
+
+	from (
+	
+     SELECT
+    sales.customer_id as customer_id
+    ,substr(cast(order_date as varchar),1,10) as order_date
+    ,menu.product_name as product_name
+    ,price    
+   ,case when order_date<join_date then 'N'
+    when order_date>=join_date then 'Y'
+    when join_date is null then 'N'
+    end as member    
+    FROM 
+    dannys_diner.menu
+    inner join 
+    dannys_diner.sales
+    on sales.product_id = menu.product_id
+    left join 
+    dannys_diner.members
+    on sales.customer_id = members.customer_id   
+	)mem
+    where mem.member = 'N'
+ ```
+ 
+ **Members**
+ ```
+ SELECT 
+	customer_id
+	,order_date
+	,product_name
+	,price
+	,member
+	,rank()over(partition by mem.customer_id order by order_date,mem.price desc) as ranking
+
+	from (
+	
+     SELECT
+    sales.customer_id as customer_id
+    ,substr(cast(order_date as varchar),1,10) as order_date
+    ,menu.product_name as product_name
+    ,price    
+	 ,case when order_date<join_date then 'N'
+    when order_date>=join_date then 'Y'
+    when join_date is null then 'N'
+    end as member        
+    FROM 
+    dannys_diner.menu
+    inner join 
+    dannys_diner.sales
+    on sales.product_id = menu.product_id
+    inner join 
+    dannys_diner.members
+    on sales.customer_id = members.customer_id   
+	)mem
+    where mem.member = 'Y'
+ ```
+ Now we combine both of the queries to get the desired result.
+ 
+ ```
+ 
+select * from (
+
+select * from (	
+--Only memebers
+	
+	
+	SELECT 
+	customer_id
+	,order_date
+	,product_name
+	,price
+	,member
+	,rank()over(partition by mem.customer_id order by order_date,mem.price desc) as ranking
+
+	from (
+	
+     SELECT
+    sales.customer_id as customer_id
+    ,substr(cast(order_date as varchar),1,10) as order_date
+    ,menu.product_name as product_name
+    ,price    
+	 ,case when order_date<join_date then 'N'
+    when order_date>=join_date then 'Y'
+    when join_date is null then 'N'
+    end as member        
+    FROM 
+    dannys_diner.menu
+    inner join 
+    dannys_diner.sales
+    on sales.product_id = menu.product_id
+    inner join 
+    dannys_diner.members
+    on sales.customer_id = members.customer_id   
+	)mem
+    where mem.member = 'Y'
+	)memberonly
+	
+	union all 
+--Non-members
+select * from 
+
+(
+
+	SELECT 
+	customer_id
+	,order_date
+	,product_name
+	,price
+	,member
+	,cast(NULL as int) as ranking
+
+	from (
+	
+     SELECT
+    sales.customer_id as customer_id
+    ,substr(cast(order_date as varchar),1,10) as order_date
+    ,menu.product_name as product_name
+    ,price    
+   ,case when order_date<join_date then 'N'
+    when order_date>=join_date then 'Y'
+    when join_date is null then 'N'
+    end as member    
+    FROM 
+    dannys_diner.menu
+    inner join 
+    dannys_diner.sales
+    on sales.product_id = menu.product_id
+    left join 
+    dannys_diner.members
+    on sales.customer_id = members.customer_id   
+	)mem
+    where mem.member = 'N'
+	
+)nonmember
+)final
+order by final.customer_id asc, order_date asc, price desc;
+```
+| customer_id | order_date | product_name | price | member | ranking |
+| ----------- | ---------- | ------------ | ----- | ------ | ------- |
+| A           | 2021-01-01 | curry        | 15    | N      |         |
+| A           | 2021-01-01 | sushi        | 10    | N      |         |
+| A           | 2021-01-07 | curry        | 15    | Y      | 1       |
+| A           | 2021-01-10 | ramen        | 12    | Y      | 2       |
+| A           | 2021-01-11 | ramen        | 12    | Y      | 3       |
+| A           | 2021-01-11 | ramen        | 12    | Y      | 3       |
+| B           | 2021-01-01 | curry        | 15    | N      |         |
+| B           | 2021-01-02 | curry        | 15    | N      |         |
+| B           | 2021-01-04 | sushi        | 10    | N      |         |
+| B           | 2021-01-11 | sushi        | 10    | Y      | 1       |
+| B           | 2021-01-16 | ramen        | 12    | Y      | 2       |
+| B           | 2021-02-01 | ramen        | 12    | Y      | 3       |
+| C           | 2021-01-01 | ramen        | 12    | N      |         |
+| C           | 2021-01-01 | ramen        | 12    | N      |         |
+| C           | 2021-01-07 | ramen        | 12    | N      |         |
 
 
 
