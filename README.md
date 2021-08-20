@@ -712,6 +712,10 @@ order by final.customer_id asc, order_date asc, price desc;
 | C           | 2021-01-07 | ramen        | 12    | N      |         |
 
 
+Null values are displayed as blank in the above table which can be seen while executed in fiddle.
 
+![image](https://user-images.githubusercontent.com/78327987/130297439-83d1f6a2-22c6-4a7b-b159-8a87393e6973.png)
+
+**The last query is a bit complicated, I think I am taking a roundabout route to solve this.So will update the last query as soon as I find an optimum query.**
 
 
