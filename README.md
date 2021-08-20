@@ -411,3 +411,55 @@ Customer C --> Doesn't have a membership yet
 
 __Question8: What is the total items and amount spent for each member before they became a member?__
 
+```
+
+    select 
+    sales.customer_id as cust_id
+    ,count(product_name) as number_Of_Items
+    ,sum(price) as Total_Amount_Spent_B4_Membership
+    FROM 
+    dannys_diner.menu
+    inner join 
+    dannys_diner.sales
+    on sales.product_id = menu.product_id
+    inner join 
+    dannys_diner.members
+    on sales.customer_id = members.customer_id
+    where join_date>order_date
+    group by cust_id;
+ ```
+ 
+| cust_id | number_of_items | total_amount_spent_b4_membership |
+| ------- | --------------- | -------------------------------- |
+| B       | 3               | 40                               |
+| A       | 2               | 25                               |
+
+
+Before becoming a member, customer A has spent $25 on 2 times and customer B has spent $40 on 3 items.
+
+__Question 9: If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?__
+  
+Every one dollar spent equals 10 points so we need to multiply price of every product(other than sushi) by 10   
+Similarly, since sushi has a 2x points multiplier on points we multiply price of sushi) by 20  
+
+```
+    select 
+    sales.customer_id as cust_id
+    ,sum(case when product_name = 'sushi' then 20*price
+    else 10*price end)
+    as points
+    FROM 
+    dannys_diner.menu
+    inner join 
+    dannys_diner.sales
+    on sales.product_id = menu.product_id
+   group by cust_id;
+```
+
+| cust_id | points |
+| ------- | ------ |
+| B       | 940    |
+| C       | 360    |
+| A       | 860    |
+
+__Question 10: In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?__
