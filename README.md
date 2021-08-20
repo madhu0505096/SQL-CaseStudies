@@ -148,6 +148,7 @@ Group the data by customer_id and use count aggregate function on customer_id to
     
     
     group by sales.customer_id;
+```
 
 | customer_id | no_of_days_visited |
 | ----------- | ----- |
@@ -155,7 +156,7 @@ Group the data by customer_id and use count aggregate function on customer_id to
 | C           | 3     |
 | A           | 6     |
 
-```
+
 But wait what if the customer has visited the restaurant more than once in a day so, let's check whether there are any records as such.
 
 ```
@@ -168,6 +169,7 @@ But wait what if the customer has visited the restaurant more than once in a day
     dannys_diner.sales  
     
     group by sales.customer_id,sales.order_date;
+```
 
 | customer_id | order_date               | count |
 | ----------- | ------------------------ | ----- |
@@ -184,7 +186,7 @@ But wait what if the customer has visited the restaurant more than once in a day
 | C           | 2021-01-01T00:00:00.000Z | 2     |
 | B           | 2021-01-11T00:00:00.000Z | 1     |
 
-```
+
 As you can see Customers A nd C has visited the restaurant twice in the same date so this should not be counted.
 
 To get the desired result, we can modify our first query by including just a distinct while counting the sales.order_date 
@@ -202,13 +204,15 @@ To get the desired result, we can modify our first query by including just a dis
         
         group by sales.customer_id;
 
+```
+
 | customer_id | no_of_days_visited |
 | ----------- | ----- |
 | A           | 4     |
 | B           | 6     |
 | C           | 2     |
 
-```
+
 
 __Question 3. What was the first item from the menu purchased by each customer?__
 
@@ -239,6 +243,7 @@ As we know some customers came more than once on the same day we should make sur
        --Query the result from the temp table with desired filter
        
        select  * from temp where temp.order =1;
+```
 
 | customer_id | order_date               | product_name | order |
 | ----------- | ------------------------ | ------------ | ----- |
@@ -248,7 +253,7 @@ As we know some customers came more than once on the same day we should make sur
 | C           | 2021-01-01T00:00:00.000Z | ramen        | 1     |
 | C           | 2021-01-01T00:00:00.000Z | ramen        | 1     |
 
-```
+
 
 __Question 4:What is the most purchased item on the menu and how many times was it purchased by all customers?__
 
@@ -274,13 +279,15 @@ Join the sales and menu table using a inner join and use count aggregate functio
     
      	group by menu.product_name;
 
+```
+
 | product_name | count |
 | ------------ | ----- |
 | ramen        | 8     |
 | sushi        | 3     |
 | curry        | 4     |
 
-```
+
 
 
 Ramen is the most frequent and it was purchased 8 times by all customers combined.
@@ -335,6 +342,8 @@ The most popular item is the one which was bought by the customer the highest nu
            
            )final where final.freq=1;
 
+---
+
 | product_name | customer_id | numberoforders |
 | ------------ | ----------- | -------------- |
 | ramen        | A           | 3              |
@@ -343,7 +352,7 @@ The most popular item is the one which was bought by the customer the highest nu
 | ramen        | B           | 2              |
 | ramen        | C           | 3              |
 
----
+
 
 __Question6: Which item was purchased first by the customer after they became a member?__  
 
