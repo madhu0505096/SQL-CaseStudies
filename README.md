@@ -493,6 +493,53 @@ __Question 10: In the first week after a customer joins the program (including t
 | B       | 700    |
 
 
+___
+Bonus Question  
+TO get the desired answer as shown we need to follow the below steps,  
+1.We need all the three tables, so join all three but while joining the member table use a left join or else customer C records would be dropped  
+2.Use a case expression to create the member column  
+3.Order the order_date in ascending and price in descending  
+4.Inorder to remove the extra characters in the order_Date field use substr function to fetch only the ten characters, also remember to cast the order date as a string before applying substr function as substr only works on strings.
+
+        SELECT
+        sales.customer_id as customer_id
+        ,substr(cast(order_date as varchar),1,10) as order_date
+        ,menu.product_name as product_name
+        ,price    
+        ,case when order_date<join_date then 'N'
+        else 'Y' end as member      
+        FROM 
+        dannys_diner.menu
+        inner join 
+        dannys_diner.sales
+        on sales.product_id = menu.product_id
+        left join 
+        dannys_diner.members
+        on sales.customer_id = members.customer_id   
+        order by sales.customer_id,order_date,price desc;
+
+```
+| customer_id | order_date | product_name | price | member |
+| ----------- | ---------- | ------------ | ----- | ------ |
+| A           | 2021-01-01 | curry        | 15    | N      |
+| A           | 2021-01-01 | sushi        | 10    | N      |
+| A           | 2021-01-07 | curry        | 15    | Y      |
+| A           | 2021-01-10 | ramen        | 12    | Y      |
+| A           | 2021-01-11 | ramen        | 12    | Y      |
+| A           | 2021-01-11 | ramen        | 12    | Y      |
+| B           | 2021-01-01 | curry        | 15    | N      |
+| B           | 2021-01-02 | curry        | 15    | N      |
+| B           | 2021-01-04 | sushi        | 10    | N      |
+| B           | 2021-01-11 | sushi        | 10    | Y      |
+| B           | 2021-01-16 | ramen        | 12    | Y      |
+| B           | 2021-02-01 | ramen        | 12    | Y      |
+| C           | 2021-01-01 | ramen        | 12    | Y      |
+| C           | 2021-01-01 | ramen        | 12    | Y      |
+| C           | 2021-01-07 | ramen        | 12    | Y      |
+
+
+
+
 
 
 
