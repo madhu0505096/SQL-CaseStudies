@@ -329,66 +329,7 @@ The most popular item is the one which was bought by the customer the highest nu
 
 __Question6: Which item was purchased first by the customer after they became a member?__  
 
-**Schema (PostgreSQL v13)**
-
-    CREATE SCHEMA dannys_diner;
-    SET search_path = dannys_diner;
-    
-    CREATE TABLE sales (
-      "customer_id" VARCHAR(1),
-      "order_date" DATE,
-      "product_id" INTEGER
-    );
-    
-    INSERT INTO sales
-      ("customer_id", "order_date", "product_id")
-    VALUES
-      ('A', '2021-01-01', '1'),
-      ('A', '2021-01-01', '2'),
-      ('A', '2021-01-07', '2'),
-      ('A', '2021-01-10', '3'),
-      ('A', '2021-01-11', '3'),
-      ('A', '2021-01-11', '3'),
-      ('B', '2021-01-01', '2'),
-      ('B', '2021-01-02', '2'),
-      ('B', '2021-01-04', '1'),
-      ('B', '2021-01-11', '1'),
-      ('B', '2021-01-16', '3'),
-      ('B', '2021-02-01', '3'),
-      ('C', '2021-01-01', '3'),
-      ('C', '2021-01-01', '3'),
-      ('C', '2021-01-07', '3');
-     
-    
-    CREATE TABLE menu (
-      "product_id" INTEGER,
-      "product_name" VARCHAR(5),
-      "price" INTEGER
-    );
-    
-    INSERT INTO menu
-      ("product_id", "product_name", "price")
-    VALUES
-      ('1', 'sushi', '10'),
-      ('2', 'curry', '15'),
-      ('3', 'ramen', '12');
-      
-    
-    CREATE TABLE members (
-      "customer_id" VARCHAR(1),
-      "join_date" DATE
-    );
-    
-    INSERT INTO members
-      ("customer_id", "join_date")
-    VALUES
-      ('A', '2021-01-07'),
-      ('B', '2021-01-09');
-
----
-
-**Query #1**
-
+```
     SELECT 
     cust_id as customer_id
     ,temp.prod_name as product_name
@@ -412,15 +353,12 @@ __Question6: Which item was purchased first by the customer after they became a 
     order by sales.customer_id,order_date
     )TEMP
     WHERE RANK = 1;
-
+```
 | customer_id | product_name |
 | ----------- | ------------ |
 | A           | curry        |
 | B           | sushi        |
 
----
-
-[View on DB Fiddle](https://www.db-fiddle.com/f/2rM8RAnq7h5LLDTzZiRWcd/138)
 
 1.The customer C hasn't purchased anything after his/her membership  
 2. Customer A bought 'Ramen' as the first dish after the membership  
@@ -428,4 +366,48 @@ __Question6: Which item was purchased first by the customer after they became a 
 
 __Question7: Which item was purchased just before the customer became a member?__
 
+```
+
+    SELECT 
+    cust_id as customer_id
+    ,temp.prod_name as product_name
+    ,order_date
+    ,join_date as membership_date
+    FROM 
+    (
+    SELECT
+    order_date
+    ,join_date 
+    ,rank()over(partition by sales.customer_id order by order_date)
+    ,sales.customer_id as cust_id
+    ,menu.product_name as prod_name
+    FROM 
+    dannys_diner.menu
+    inner join 
+    dannys_diner.sales
+    on sales.product_id = menu.product_id
+    inner join 
+    dannys_diner.members
+    on sales.customer_id = members.customer_id
+    where join_date>order_date
+    order by sales.customer_id,order_date
+    )TEMP
+    WHERE RANK = 1;
+```
+| customer_id | product_name | order_date               | membership_date          |
+| ----------- | ------------ | ------------------------ | ------------------------ |
+| A           | sushi        | 2021-01-01T00:00:00.000Z | 2021-01-07T00:00:00.000Z |
+| A           | curry        | 2021-01-01T00:00:00.000Z | 2021-01-07T00:00:00.000Z |
+| B           | curry        | 2021-01-01T00:00:00.000Z | 2021-01-09T00:00:00.000Z |
+
+
+Just before the customers became a member,
+
+Customer A --> Ordered Sushi and Curry on the same day
+
+Customer B --> Ordered Curry on the 
+
+Customer C --> Doesn't have a membership yet
+
 __Question8: What is the total items and amount spent for each member before they became a member?__
+
