@@ -329,6 +329,42 @@ The most popular item is the one which was bought by the customer the highest nu
 
 __Question6: Which item was purchased first by the customer after they became a member?__  
 
+---
+    SELECT 
+    cust_id as customer_id
+    ,temp.prod_name as product_name
+    
+    FROM 
+    (
+    SELECT
+    *,
+    rank()over(partition by sales.customer_id order by order_date)
+    ,sales.customer_id as cust_id
+    ,menu.product_name as prod_name
+    FROM 
+    dannys_diner.menu
+    inner join 
+    dannys_diner.sales
+    on sales.product_id = menu.product_id
+    inner join 
+    dannys_diner.members
+    on sales.customer_id = members.customer_id
+    where join_date<order_date
+    order by sales.customer_id,order_date
+    )TEMP
+    WHERE RANK = 1;
+
+| customer_id | product_name |
+| ----------- | ------------ |
+| A           | ramen        |
+| B           | sushi        |
+
+---
+
+1.The customer C hasn't purchased anything after his/her membership
+2. Customer A bought 'Ramen' as the first dish after the membership
+3. Customer B bought 'Sushi' as the first dish after the membership
 
 __Question7: Which item was purchased just before the customer became a member?__
+
 __Question8: What is the total items and amount spent for each member before they became a member?__
