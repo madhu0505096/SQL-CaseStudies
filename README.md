@@ -106,7 +106,7 @@ __Question 1: What is the total amount each customer spent at the restaurant?__
 select 
 
 sales.customer_id
-,sum(menu.price)
+,sum(menu.price) as Total_Amount_Spent
 
 from 
 
@@ -121,6 +121,18 @@ on  sales.product_id  = menu.product_id
 group by sales.customer_id;
 
 ```
+
+| customer_id | total_amount_spent |
+| ----------- | ------------------ |
+| B           | 74                 |
+| C           | 36                 |
+| A           | 76                 |
+
+---
+Customer A has spent 76  
+Customer B has spent 74  
+Customer C has spent 36  
+
 __Question 2. How many days has each customer visited the restaurant?__
 
 Group the data by customer_id and use count aggregate function on customer_id to get the number of days a customer has visited the restaurant.
@@ -128,7 +140,7 @@ Group the data by customer_id and use count aggregate function on customer_id to
     select 
     
     sales.customer_id
-    ,count(sales.order_date)
+    ,count(sales.order_date) as no_of_days_visited
     
     from 
     
@@ -137,7 +149,7 @@ Group the data by customer_id and use count aggregate function on customer_id to
     
     group by sales.customer_id;
 
-| customer_id | count |
+| customer_id | no_of_days_visited |
 | ----------- | ----- |
 | B           | 6     |
 | C           | 3     |
@@ -181,7 +193,7 @@ To get the desired result, we can modify our first query by including just a dis
     select 
         
         sales.customer_id
-        ,count(distinct sales.order_date)
+        ,count(distinct sales.order_date) as no_of_days_visited
         
         from 
         
@@ -190,7 +202,7 @@ To get the desired result, we can modify our first query by including just a dis
         
         group by sales.customer_id;
 
-| customer_id | count |
+| customer_id | no_of_days_visited |
 | ----------- | ----- |
 | A           | 4     |
 | B           | 6     |
