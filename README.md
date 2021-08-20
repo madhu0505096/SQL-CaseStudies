@@ -99,7 +99,7 @@ We can execute the SQL using dbfiddle["https://www.db-fiddle.com/f/mcnNXgFYpuDXB
 
 __
 
-__Question 1: What is the total amount each customer spent at the restaurant?__
+## __Question 1: What is the total amount each customer spent at the restaurant?__
 
 
 ```
@@ -133,7 +133,7 @@ Customer A has spent 76
 Customer B has spent 74  
 Customer C has spent 36  
 
-__Question 2. How many days has each customer visited the restaurant?__
+## __Question 2. How many days has each customer visited the restaurant?__
 
 Group the data by customer_id and use count aggregate function on customer_id to get the number of days a customer has visited the restaurant.
 ```
@@ -214,7 +214,7 @@ To get the desired result, we can modify our first query by including just a dis
 
 
 
-__Question 3. What was the first item from the menu purchased by each customer?__
+## __Question 3. What was the first item from the menu purchased by each customer?__
 
 The first item from the menu which was purchased by the customers can be found out by looking at the first order_date for each customer.
 As we know some customers came more than once on the same day we should make sure our query covers this scenario.
@@ -255,7 +255,7 @@ As we know some customers came more than once on the same day we should make sur
 
 
 
-__Question 4:What is the most purchased item on the menu and how many times was it purchased by all customers?__
+## __Question 4:What is the most purchased item on the menu and how many times was it purchased by all customers?__
 
 Join the sales and menu table using a inner join and use count aggregate function.
 
@@ -292,7 +292,7 @@ Join the sales and menu table using a inner join and use count aggregate functio
 
 Ramen is the most frequent and it was purchased 8 times by all customers combined.
 
-__Question5:Which item was the most popular for each customer?__
+## __Question5:Which item was the most popular for each customer?__
 
 The most popular item is the one which was bought by the customer the highest number of times.
 
@@ -354,7 +354,7 @@ The most popular item is the one which was bought by the customer the highest nu
 
 
 
-__Question6: Which item was purchased first by the customer after they became a member?__  
+## __Question6: Which item was purchased first by the customer after they became a member?__  
 
 ```
     SELECT 
@@ -391,7 +391,7 @@ __Question6: Which item was purchased first by the customer after they became a 
 2. Customer A bought 'Ramen' as the first dish after the membership  
 3. Customer B bought 'Sushi' as the first dish after the membership  
 
-__Question7: Which item was purchased just before the customer became a member?__
+## __Question7: Which item was purchased just before the customer became a member?__
 
 ```
 
@@ -436,7 +436,7 @@ Customer B --> Ordered Curry on the
 
 Customer C --> Doesn't have a membership yet
 
-__Question8: What is the total items and amount spent for each member before they became a member?__
+## __Question8: What is the total items and amount spent for each member before they became a member?__
 
 ```
 
@@ -464,7 +464,7 @@ __Question8: What is the total items and amount spent for each member before the
 
 Before becoming a member, customer A has spent $25 on 2 times and customer B has spent $40 on 3 items.
 
-__Question 9: If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?__
+## __Question 9: If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?__
   
 Every one dollar spent equals 10 points so we need to multiply price of every product(other than sushi) by 10   
 Similarly, since sushi has a 2x points multiplier on points we multiply price of sushi) by 20  
@@ -491,7 +491,7 @@ Similarly, since sushi has a 2x points multiplier on points we multiply price of
 
 We can infer the points for each customer from above table.  
 
-__Question 10: In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?__
+## __Question 10: In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?__
 
 ```
     select 
@@ -522,7 +522,7 @@ __Question 10: In the first week after a customer joins the program (including t
 
 ___
 
-Bonus Question  
+## Bonus Question  
 To get the desired answer as shown we need to follow the below steps,  
 1.We need all the three tables, so join all three but while joining the member table use a left join or else customer C records would be dropped  
 2.Use a case expression to create the member column  
