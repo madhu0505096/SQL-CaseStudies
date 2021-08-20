@@ -493,15 +493,16 @@ __Question 10: In the first week after a customer joins the program (including t
 | B       | 700    |
 
 
-____
+___
 
 Bonus Question  
-TO get the desired answer as shown we need to follow the below steps,  
+To get the desired answer as shown we need to follow the below steps,  
 1.We need all the three tables, so join all three but while joining the member table use a left join or else customer C records would be dropped  
 2.Use a case expression to create the member column  
 3.Order the order_date in ascending and price in descending  
 4.Inorder to remove the extra characters in the order_Date field use substr function to fetch only the ten characters, also remember to cast the order date as a string before applying substr function as substr only works on strings.
 
+```
         SELECT
         sales.customer_id as customer_id
         ,substr(cast(order_date as varchar),1,10) as order_date
@@ -539,9 +540,6 @@ TO get the desired answer as shown we need to follow the below steps,
 | C           | 2021-01-01 | ramen        | 12    | Y      |
 | C           | 2021-01-01 | ramen        | 12    | Y      |
 | C           | 2021-01-07 | ramen        | 12    | Y      |
-
-
-
 
 ___
 **Rank All The Things**
