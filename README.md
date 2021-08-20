@@ -467,31 +467,33 @@ We can infer the points for each customer from above table.
 __Question 10: In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?__
 
 ```
-
     select 
-    
-    sales.customer_id as cust_id
-    ,sum(
-    case when (product_name = 'sushi' and order_date<join_date) then 20*price
-    	 when (product_name not in ('sushi') and order_date<join_date) then 10*price
-      	 when  (order_date>= (join_date+6) ) then 20*price
-      	 when ( (order_date>(join_date+7)) and (order_date<'2021-01-31') ) then 1
-         end) as points
-    FROM 
-    dannys_diner.menu
-    inner join 
-    dannys_diner.sales
-    on sales.product_id = menu.product_id
-    inner join 
-    dannys_diner.members
-    on sales.customer_id = members.customer_id
-    group by cust_id;
-```
+        
+        sales.customer_id as cust_id
+        ,sum(
+        case when (product_name = 'sushi' and order_date<join_date) then 20*price
+        	 when (product_name not in ('sushi') and order_date<join_date) then 10*price
+          	 when  (order_date>= join_date and order_date< (join_date+6) ) then 20*price
+          	 when ( (order_date>(join_date+7)) and (order_date<'2021-01-31') ) then 1
+             end) as points
+        FROM 
+        dannys_diner.menu
+        inner join 
+        dannys_diner.sales
+        on sales.product_id = menu.product_id
+        inner join 
+        dannys_diner.members
+        on sales.customer_id = members.customer_id
+        group by cust_id;
 
+```
 | cust_id | points |
 | ------- | ------ |
-| A       | 350    |
-| B       | 980    |
+| A       | 1370   |
+| B       | 700    |
+
+
+
 
 
 
