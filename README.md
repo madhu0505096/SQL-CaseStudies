@@ -1,6 +1,6 @@
 # SQL-CaseStudy1 Danny's Dinner
 
-The below case study is given by [Danny ma](https://8weeksqlchallenge.com/case-study-1/){:target="_blank" rel="noopener"} and there are a total of 8 case studies; here I go through the first case study Danny's Dinner.
+The below case study is given by [Danny ma](https://8weeksqlchallenge.com/case-study-1/{:target="_blank" rel="noopener"}) and there are a total of 8 case studies; here I go through the first case study Danny's Dinner.
 
 Danny has a awesome course named Serious SQL, I highly recommend to check out his course [here.](https://www.datawithdanny.com/courses/serious-sql)
 
