@@ -1,4 +1,5 @@
 # SQL-CaseStudy1 Danny's Dinner
+![image](https://user-images.githubusercontent.com/78327987/130469461-8c7c876d-57e4-4875-bb24-161a38b4d952.png)
 
 The below case study is given by [Danny ma](https://8weeksqlchallenge.com/case-study-1/) and there are a total of 8 case studies; here I go through the first case study Danny's Dinner.
 
@@ -95,7 +96,7 @@ VALUES
   ('A', '2021-01-07'),
   ('B', '2021-01-09');
 ```
-We can execute the SQL using dbfiddle["https://www.db-fiddle.com/f/mcnNXgFYpuDXB5fFQGhogs/1"]  
+We can execute the SQL using [dbfiddle]("https://www.db-fiddle.com/f/mcnNXgFYpuDXB5fFQGhogs/1"] )
 
 __
 
@@ -805,6 +806,4 @@ Null values are displayed as blank in the above table which can be seen while ex
 
 ![image](https://user-images.githubusercontent.com/78327987/130297439-83d1f6a2-22c6-4a7b-b159-8a87393e6973.png)
 
-**The last query is a bit complicated, I think I am taking a roundabout route to solve this.So will update the last query as soon as I find an optimum query.**
-
-
+**Have any SQL doubts or need mentonring please feel free to contact me at madhuprasath556@gmail.com or [Linkedln](https://www.linkedin.com/in/madhu-prasath/)**
