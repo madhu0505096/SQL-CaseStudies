@@ -745,4 +745,3 @@ Null values are displayed as blank in the above table which can be seen while ex
 
 **The last query is a bit complicated, I think I am taking a roundabout route to solve this.So will update the last query as soon as I find an optimum query.**
 
-
