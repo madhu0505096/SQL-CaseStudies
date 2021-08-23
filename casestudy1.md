@@ -522,12 +522,12 @@ Similar to other questions we use a case when statement to construct the logic, 
     select 
         
         sales.customer_id as cust_id
-        ,sum(
-        case when (product_name = 'sushi' and order_date<join_date) then 20*price
-        	 when (product_name not in ('sushi') and order_date<join_date) then 10*price
-          	 when  (order_date>= join_date and order_date< (join_date+7) ) then 20*price
-          	 when ( (order_date>(join_date+7)) and (order_date<'2021-01-31') ) then 1
-             end) as points
+ ,sum(case when (product_name = 'sushi' and order_date<join_date) or 
+         (product_name = 'sushi' and extract( month from order_date)=1 and order_date>(join_date+6)  ) 
+          then 20*price
+         when (product_name not in ('sushi') and order_date<join_date) or 
+         (extract( month from order_date)=1 and order_date>(join_date+6)) then 		10*price
+          when  (order_date>= join_date and order_date<= (join_date+6) ) then 20*price  end) as points
         FROM 
         dannys_diner.menu
         inner join 
@@ -542,13 +542,18 @@ Similar to other questions we use a case when statement to construct the logic, 
 | cust_id | points |
 | ------- | ------ |
 | A       | 1370   |
-| B       | 700    |
+| B       | 820    |
 
 
 ___
 
 ## Bonus Question  
-To get the desired answer as shown we need to follow the below steps,  
+
+![image](https://user-images.githubusercontent.com/78327987/130464615-4e427be9-6e16-4fe2-87b2-511f0ffced62.png)
+
+![image](https://user-images.githubusercontent.com/78327987/130464579-1d6944d4-39b4-40d3-aef2-2d20bf179f0f.png)
+
+To get the desired answer as shown above we need to follow the below steps,  
 1.We need all the three tables, so join all three but while joining the member table use a left join or else customer C records would be dropped  
 2.Use a case expression to create the member column  
 3.Order the order_date in ascending and price in descending  
@@ -596,8 +601,38 @@ To get the desired answer as shown we need to follow the below steps,
 ___
 **Rank All The Things**
 
-To get rank for only the members and null vaue for non-members we create two seperate queries and union them.
+Danny also requires further information about the ranking of customer products, but he purposely does not need the ranking for non-member purchases so he expects null ranking values for the records when customers are not yet part of the loyalty program.  
 
+We can solve this by many ways here I will be taking two methods one the easy simple method and the other lengthy one.  
+
+1.Create a CTE with member/non-member details as above  
+2.Use  case when along with the rank window function  
+
+```
+WITH SUMMARY_CTE  AS 
+(
+ SELECT SALES.CUSTOMER_ID, SALES.ORDER_DATE, MENU.PRODUCT_NAME, MENU.PRICE,
+  CASE
+  WHEN MEMBERS.JOIN_DATE > SALES.ORDER_DATE THEN 'N'
+  WHEN MEMBERS.JOIN_DATE <= SALES.ORDER_DATE THEN 'Y'
+  ELSE 'N' END AS MEMBER
+ FROM DANNYS_DINER.SALES AS SALES
+ LEFT JOIN DANNYS_DINER.MENU 
+  ON SALES.PRODUCT_ID = MENU.PRODUCT_ID
+ LEFT JOIN DANNYS_DINER.MEMBERS 
+  ON SALES.CUSTOMER_ID = MEMBERS.CUSTOMER_ID
+) SELECT * 
+, CASE
+ WHEN MEMBER = 'N' THEN NULL
+ ELSE
+  RANK () OVER(PARTITION BY CUSTOMER_ID, MEMBER
+  ORDER BY ORDER_DATE) END AS RANKING
+  FROM SUMMARY_CTE
+```
+
+ **Another way of solving**  
+
+To get rank for only the members and null vaue for non-members we create two seperate queries and union them.  This query would do the job but it is would have poor performance.   
 
 **Non-Members**
 ```
@@ -664,6 +699,8 @@ To get rank for only the members and null vaue for non-members we create two sep
 	)mem
     where mem.member = 'Y'
  ```
+**Union**  
+ 
  Now we combine both of the queries to get the desired result.
  
  ```
