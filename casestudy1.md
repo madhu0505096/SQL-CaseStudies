@@ -408,7 +408,10 @@ So what are we trying to achieve here?
 
 If a customer has purchased food on let's say day 1,2,3,7,10 and if he/she get's membership on day 7 then we need to find what the customer bought on Day 3.  
 
-The main SQL function here is the rank() function which helps us to align the order date for ach customer in the way we want and the where clause helps to filter only the dates  
+
+Use where clause  to filter only the dates before membership and order it by desending and pick the first one.  
+
+Use rank() function which helps us to align the order date for each customer in the way we want and the where clause helps to filter only the dates.   
 
 ```
     SELECT 
@@ -454,8 +457,11 @@ Customer C --> Doesn't have a membership, so C is excluded
 
 ## __Question8: What is the total items and amount spent for each member before they became a member?__
 
-```
+Similar to previous question the where clause helps to concentrate only on the data before they became a member.  
 
+Then, use aggregate function along with group by to find the desired result.  
+
+```
     select 
     sales.customer_id as cust_id
     ,count(product_name) as number_Of_Items
@@ -485,6 +491,8 @@ Before becoming a member, customer A has spent $25 on 2 times and customer B has
 Every one dollar spent equals 10 points so we need to multiply price of every product(other than sushi) by 10   
 Similarly, since sushi has a 2x points multiplier on points we multiply price of sushi) by 20  
 
+This can be done using Case when statement and then  to find total points for each customer we can use aggregate functions along with group by.  
+
 ```
     select 
     sales.customer_id as cust_id
@@ -509,6 +517,7 @@ We can infer the points for each customer from above table.
 
 ## __Question 10: In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?__
 
+Similar to other questions we use a case when statement to construct the logic, and consider every possible scenarios.  
 ```
     select 
         
@@ -516,7 +525,7 @@ We can infer the points for each customer from above table.
         ,sum(
         case when (product_name = 'sushi' and order_date<join_date) then 20*price
         	 when (product_name not in ('sushi') and order_date<join_date) then 10*price
-          	 when  (order_date>= join_date and order_date< (join_date+6) ) then 20*price
+          	 when  (order_date>= join_date and order_date< (join_date+7) ) then 20*price
           	 when ( (order_date>(join_date+7)) and (order_date<'2021-01-31') ) then 1
              end) as points
         FROM 
