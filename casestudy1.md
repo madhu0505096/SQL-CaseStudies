@@ -129,9 +129,9 @@ group by sales.customer_id;
 | A           | 76                 |
 
 ---
-Customer A has spent 76  
-Customer B has spent 74  
-Customer C has spent 36  
+Customer A has spent $76  
+Customer B has spent $74  
+Customer C has spent $36  
 
 ## __Question 2. How many days has each customer visited the restaurant?__
 
@@ -212,6 +212,9 @@ To get the desired result, we can modify our first query by including just a dis
 | B           | 6     |
 | C           | 2     |
 
+1.Customer A visited 4 times.  
+2.Customer B visited 6 times.  
+3.Customer C visited 2 times.  
 
 
 ## __Question 3. What was the first item from the menu purchased by each customer?__
@@ -253,7 +256,7 @@ As we know some customers came more than once on the same day we should make sur
 | C           | 2021-01-01T00:00:00.000Z | ramen        | 1     |
 | C           | 2021-01-01T00:00:00.000Z | ramen        | 1     |
 
-
+If you don't want to see all the columns, remove '*' from the select statement and specify the required columns to be displayed.   
 
 ## __Question 4:What is the most purchased item on the menu and how many times was it purchased by all customers?__
 
@@ -291,6 +294,11 @@ Join the sales and menu table using a inner join and use count aggregate functio
 
 
 Ramen is the most frequent and it was purchased 8 times by all customers combined.
+
+curry is the second most frequent and it was purchased 4 times by all customers combined. 
+
+sushi is the third most frequent and it was purchased 3 times by all customers combined. 
+
 
 ## __Question5:Which item was the most popular for each customer?__
 
@@ -352,7 +360,8 @@ The most popular item is the one which was bought by the customer the highest nu
 | ramen        | B           | 2              |
 | ramen        | C           | 3              |
 
-
+Customer A and C’s favourite item is ramen.  
+Customer B tried all items in the menu.    
 
 ## __Question6: Which item was purchased first by the customer after they became a member?__  
 
@@ -387,8 +396,8 @@ The most popular item is the one which was bought by the customer the highest nu
 | B           | sushi        |
 
 
-1.The customer C hasn't purchased anything after his/her membership  
-2. Customer A bought 'Ramen' as the first dish after the membership  
+1.The customer C DOESN'T have a membership so excluded.
+2. Customer A bought 'curry' as the first dish after the membership  
 3. Customer B bought 'Sushi' as the first dish after the membership  
 
 ## __Question7: Which item was purchased just before the customer became a member?__
@@ -405,7 +414,7 @@ The most popular item is the one which was bought by the customer the highest nu
     SELECT
     order_date
     ,join_date 
-    ,rank()over(partition by sales.customer_id order by order_date)
+    ,rank()over(partition by sales.customer_id order by order_date desc)
     ,sales.customer_id as cust_id
     ,menu.product_name as prod_name
     FROM 
