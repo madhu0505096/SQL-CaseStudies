@@ -402,48 +402,55 @@ Customer B tried all items in the menu.
 
 ## __Question7: Which item was purchased just before the customer became a member?__
 
+It's always important to understand the business question.  
+
+So what are we trying to achieve here?
+
+If a customer has purchased food on let's say day 1,2,3,7,10 and if he/she get's membership on day 7 then we need to find what the customer bought on Day 3.  
+
+The main SQL function here is the rank() function which helps us to align the order date for ach customer in the way we want and the where clause helps to filter only the dates  
+
+```
+    SELECT 
+        cust_id as customer_id
+        ,temp.prod_name as product_name
+        ,order_date
+        ,join_date as membership_date
+        FROM 
+        (
+        SELECT
+        order_date
+        ,join_date 
+        ,rank()over(partition by sales.customer_id order by order_date desc)
+        ,sales.customer_id as cust_id
+        ,menu.product_name as prod_name
+        FROM 
+        dannys_diner.menu
+        inner join 
+        dannys_diner.sales
+        on sales.product_id = menu.product_id
+        inner join 
+        dannys_diner.members
+        on sales.customer_id = members.customer_id
+        where join_date>order_date
+        order by sales.customer_id,order_date
+        )TEMP
+        WHERE RANK = 1;
 ```
 
-    SELECT 
-    cust_id as customer_id
-    ,temp.prod_name as product_name
-    ,order_date
-    ,join_date as membership_date
-    FROM 
-    (
-    SELECT
-    order_date
-    ,join_date 
-    ,rank()over(partition by sales.customer_id order by order_date desc)
-    ,sales.customer_id as cust_id
-    ,menu.product_name as prod_name
-    FROM 
-    dannys_diner.menu
-    inner join 
-    dannys_diner.sales
-    on sales.product_id = menu.product_id
-    inner join 
-    dannys_diner.members
-    on sales.customer_id = members.customer_id
-    where join_date>order_date
-    order by sales.customer_id,order_date
-    )TEMP
-    WHERE RANK = 1;
-```
 | customer_id | product_name | order_date               | membership_date          |
 | ----------- | ------------ | ------------------------ | ------------------------ |
 | A           | sushi        | 2021-01-01T00:00:00.000Z | 2021-01-07T00:00:00.000Z |
 | A           | curry        | 2021-01-01T00:00:00.000Z | 2021-01-07T00:00:00.000Z |
-| B           | curry        | 2021-01-01T00:00:00.000Z | 2021-01-09T00:00:00.000Z |
-
+| B           | sushi        | 2021-01-04T00:00:00.000Z | 2021-01-09T00:00:00.000Z |
 
 Just before the customers became a member,
 
 Customer A --> Ordered Sushi and Curry on the same day
 
-Customer B --> Ordered Curry on the 
+Customer B --> Ordered sushi 
 
-Customer C --> Doesn't have a membership yet
+Customer C --> Doesn't have a membership, so C is excluded
 
 ## __Question8: What is the total items and amount spent for each member before they became a member?__
 
