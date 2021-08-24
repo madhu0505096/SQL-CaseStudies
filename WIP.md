@@ -154,6 +154,49 @@ Then for each group of pizza_names we can find the count.
 
 ## 6.What was the maximum number of pizzas delivered in a single order?
 
-A single order correpsonds to an order placed at the same time.If I have ordered 2 pizzas at time A then the count 
+A single order correpsonds to an order placed at the same time.If I have ordered 2 pizzas at time A and if it's delivered then the count is 2.
+
+From the date we can see that all the single orders have duplicate values.  
+![image](https://user-images.githubusercontent.com/78327987/130576684-8166bfe0-a27d-4ed2-8463-fcb1347925c0.png)
+
+So we can get the desired result by removing all cancelled orders and counting the number of duplicate order_ids.  
+
+
+```
+with cte as(
+    select
+      CUSTOMER_ORDERS.ORDER_ID
+    ,count(CUSTOMER_ORDERS.ORDER_ID) as cnt
+    FROM 
+    PIZZA_RUNNER.CUSTOMER_ORDERS
+    INNER JOIN 
+    PIZZA_RUNNER.runner_orders
+    ON CUSTOMER_ORDERS.ORDER_ID = runner_orders.order_id
+    inner join 
+    PIZZA_RUNNER.pizza_names
+    on
+    pizza_names.pizza_id = CUSTOMER_ORDERS.pizza_id
+    WHERE (cancellation NOT IN ('Restaurant Cancellation','Customer Cancellation') or cancellation is NULL)
+    group by CUSTOMER_ORDERS.ORDER_ID
+    )
+    select order_id,cnt from cte where cnt in (
+      select max(cnt) from cte);
+```
+
+
+| order_id | cnt |
+| -------- | --- |
+| 4        | 3   |
+
+
+**Answer**  
+In a single order the maximum number of pizzas delivered is 3 and the corresponfing order_id is 4  
+
 
 ## 7.For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+
+## 8.How many pizzas were delivered that had both exclusions and extras?
+
+## 9.What was the total volume of pizzas ordered for each hour of the day?
+
+## 10.What was the volume of orders for each day of the week?
