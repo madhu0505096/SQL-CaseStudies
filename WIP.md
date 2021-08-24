@@ -194,6 +194,9 @@ In a single order the maximum number of pizzas delivered is 3 and the corresponf
 
 
 ## 7.For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+Firstly, to get only the delivered pizzas we can use the where filter on `cancellation` column.  
+
+Then to know whether the pizza had a change or not we should look into `exclusions` and `extras` column. 
 
 ## 8.How many pizzas were delivered that had both exclusions and extras?
 
