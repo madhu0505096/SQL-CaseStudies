@@ -806,4 +806,4 @@ Null values are displayed as blank in the above table which can be seen while ex
 
 ![image](https://user-images.githubusercontent.com/78327987/130297439-83d1f6a2-22c6-4a7b-b159-8a87393e6973.png)
 
-**Have any SQL doubts or need mentonring please feel free to contact me at madhuprasath556@gmail.com or [Linkedln](https://www.linkedin.com/in/madhu-prasath/)**
+**Have any SQL doubts or need mentoring please feel free to contact me at madhuprasath556@gmail.com or [Linkedln](https://www.linkedin.com/in/madhu-prasath/)**
