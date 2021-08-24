@@ -198,7 +198,82 @@ Firstly, to get only the delivered pizzas we can use the where filter on `cancel
 
 Then to know whether the pizza had a change or not we should look into `exclusions` and `extras` column. 
 
+Use case when statement to logically decide whether the order has a change or not and enclose this in a CTE.
+
+Then find the number of orders which had the change using count() aggregate function along with group by.  
+
+```
+    with cte as(
+    select 
+         case when (exclusions ='' or exclusions is null or exclusions ='null') 
+      	and (extras ='' or extras ='null' or extras is null) then 'No Change' else 'Change' end as test       
+        
+        FROM 
+        PIZZA_RUNNER.CUSTOMER_ORDERS
+        INNER JOIN 
+        PIZZA_RUNNER.runner_orders
+        ON CUSTOMER_ORDERS.ORDER_ID = runner_orders.order_id
+        inner join 
+        PIZZA_RUNNER.pizza_names
+        on
+        pizza_names.pizza_id = CUSTOMER_ORDERS.pizza_id
+        WHERE (cancellation NOT IN ('Restaurant Cancellation','Customer Cancellation') 	   or cancellation is NULL)
+    ) 
+    select
+    test
+    ,count(test)
+    from cte
+    group by test;
+```
+| test      | count |
+| --------- | ----- |
+| Change    | 6     |
+| No Change | 6     |
+
+
+
 ## 8.How many pizzas were delivered that had both exclusions and extras?
+
+As usual we would remove all the cancelled orders via where filter.  
+
+Then to find the orders with both exclusions and extras, we should make sure there is any number as a value using regular expression.
+
+After applying the regular expression, the CTE would have only the orders with numbers either in exclusions and extras.  
+
+Then on top of the CTE we filter only the records which has number in both exclusions and extras.
+
+Finally the count of the result set would give the desired answer.  
+```
+    with cte as(
+    select
+        
+          regexp_matches(exclusions,'[0-9]') as exclusions
+      	 ,regexp_matches(extras,'[0-9]') as extras
+        
+        
+        FROM 
+        PIZZA_RUNNER.CUSTOMER_ORDERS
+        INNER JOIN 
+        PIZZA_RUNNER.runner_orders
+        ON CUSTOMER_ORDERS.ORDER_ID = runner_orders.order_id
+        inner join 
+        PIZZA_RUNNER.pizza_names
+        on
+        pizza_names.pizza_id = CUSTOMER_ORDERS.pizza_id
+        WHERE (cancellation NOT IN ('Restaurant Cancellation','Customer Cancellation') 	   or cancellation is NULL )
+        
+    ) 
+    select
+    count(*) as Count_Of_Exclusions_And_Extras
+    from cte
+    where (exclusions is not null and extras is not null);
+```
+| count_of_exclusions_and_extras |
+| ------------------------------ |
+| 1                              |
+
+**Answer**
+There was only one order which had both exclusion and extras  
 
 ## 9.What was the total volume of pizzas ordered for each hour of the day?
 
