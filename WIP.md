@@ -275,6 +275,26 @@ Finally the count of the result set would give the desired answer.
 **Answer**
 There was only one order which had both exclusion and extras  
 
-## 9.What was the total volume of pizzas ordered for each hour of the day?
+## 9.What was the total volume of pizzas ordered for each hour of the day?  
+
+We can extract only the hour from the time stamp and check how many orders were placed for each individual hour.
+
+Extract function will help us to sperate the hour from the timestamp and count() aggregate function coupled with group by would give us the desired result.
+```
+    SELECT extract(hour from order_time)as individualHour, count(*) as NumberOfPizzaOrdered
+    from pizza_runner.customer_orders	
+    group by individualHour;
+```
+| individualhour | numberofpizzaordered |
+| -------------- | -------------------- |
+| 18             | 3                    |
+| 23             | 3                    |
+| 21             | 3                    |
+| 11             | 1                    |
+| 19             | 1                    |
+| 13             | 3                    |
+
+From above table we can see that mostly 3 pizzas are sold each hour and a few times only one pizza is sold per hour.
+
 
 ## 10.What was the volume of orders for each day of the week?
