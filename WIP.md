@@ -298,8 +298,10 @@ From above table we can see that mostly 3 pizzas are sold each hour and a few ti
 
 
 ## 10.What was the volume of orders for each day of the week?
+
 To get each day of the week we can use `isdow` function which would return a number between 1 to 7.  
 
+The below table shows the results from `isdow` and it's asscoicated day in the week.  
 |from isdow| Corresponding Day|
 |-----|------|
 |1 | Monday|
@@ -335,5 +337,9 @@ To get each day of the week we can use `isdow` function which would return a num
 | Wednesday | 5                    |
 
 
-
+**Answer**  
+On wednesady there were 5 orders  
+On Thursday there were 3 orders  
+On Friday there were 1 orders  
+On Saturday there were 5 orders  
 
