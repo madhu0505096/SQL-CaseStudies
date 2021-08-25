@@ -298,3 +298,42 @@ From above table we can see that mostly 3 pizzas are sold each hour and a few ti
 
 
 ## 10.What was the volume of orders for each day of the week?
+To get each day of the week we can use `isdow` function which would return a number between 1 to 7.  
+
+|from isdow| Corresponding Day|
+|-----|------|
+|1 | Monday|
+|2 | Tuesday|
+|3 | Wednesday|
+|4 | Thursday|
+|5 | Friday|
+|6 | Saturday|
+|7 | Sunday|
+
+
+```
+    SELECT 
+    case when extract(isodow  from order_time) = 1 then 'Monday' 
+    when extract(isodow  from order_time) = 2 then 'Teuesday' 
+    when extract(isodow  from order_time) = 3 then 'Wednesday' 
+    when extract(isodow  from order_time) = 4 then 'Thursday' 
+    when extract(isodow  from order_time) = 5 then 'Friday' 
+    when extract(isodow  from order_time) = 6 then 'Saturday' 
+    when extract(isodow  from order_time) = 7 then 'Sunday' 
+    end as Day
+    , count(*) as NumberOfPizzaOrdered
+    from pizza_runner.customer_orders	
+    group by Day;
+
+```
+
+| day       | numberofpizzaordered |
+| --------- | -------------------- |
+| Thursday  | 3                    |
+| Friday    | 1                    |
+| Saturday  | 5                    |
+| Wednesday | 5                    |
+
+
+
+
