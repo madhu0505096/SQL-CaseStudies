@@ -399,6 +399,8 @@ On week 1 two persons registered, on week 2 and 3 only one person registered.
 
 ## 2.What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?  
 
+We need order time and pickup time to find the answer and both of these attributes are in different tables.So first we need to join the tables together and find the average time by calculating the difference.  
+
 ## 3.Is there any relationship between the number of pizzas and how long the order takes to prepare?  
 
 
