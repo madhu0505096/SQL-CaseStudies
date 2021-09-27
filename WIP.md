@@ -350,7 +350,6 @@ We can infer that on  Mondays and Tuesdays the Pizza runners don't work and Wedn
 
 ## 1.How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
 To solve this we will use the date part function to find the weeks for each specific dates.  
-
 ```
 SELECT *, date_part('week',registration_date) as week_period
 FROM pizza_runner.runners;
@@ -364,6 +363,39 @@ FROM pizza_runner.runners;
 | 3         | 2021-01-08T00:00:00.000Z | 1           |
 | 4         | 2021-01-15T00:00:00.000Z | 2           |
 
+As per the result the date 2021-01-01 belongs to week 53 but it should be 1.so we tweak the query a bit to make 2021-01-01 as the first week.  
+
+```
+ SELECT *, 
+ case when date_part('week',registration_date)+1 =54 then 1 else 
+ date_part('week',registration_date)+1 end as week_period
+ FROM pizza_runner.runners
+ ```
+| runner_id | registration_date        | week_period |
+| --------- | ------------------------ | ----------- |
+| 1         | 2021-01-01T00:00:00.000Z | 1           |
+| 2         | 2021-01-03T00:00:00.000Z | 1           |
+| 3         | 2021-01-08T00:00:00.000Z | 2           |
+| 4         | 2021-01-15T00:00:00.000Z | 3           |
+
+The result is as expected now we only need to count the number of registration per each week.  
+
+```
+    SELECT  
+     case when date_part('week',registration_date)+1 =54 then 1 else 
+     date_part('week',registration_date)+1 end as week_period
+     ,count(*)
+     FROM pizza_runner.runners
+     group by week_period
+     order by week_period;
+```
+| week_period | count |
+| ----------- | ----- |
+| 1           | 2     |
+| 2           | 1     |
+| 3           | 1     |
+
+On week 1 two persons registered, on week 2 and 3 only one person registered.  
 
 ## 2.What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?  
 
