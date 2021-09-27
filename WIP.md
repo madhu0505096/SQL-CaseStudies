@@ -348,7 +348,22 @@ We can infer that on  Mondays and Tuesdays the Pizza runners don't work and Wedn
 #  B.Runner and Customer Experience
 
 
-## 1.How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)  
+## 1.How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
+To solve this we will use the date part function to find the weeks for each specific dates.  
+
+```
+SELECT *, date_part('week',registration_date) as week_period
+FROM pizza_runner.runners;
+```
+
+
+| runner_id | registration_date        | week_period |
+| --------- | ------------------------ | ----------- |
+| 1         | 2021-01-01T00:00:00.000Z | 53          |
+| 2         | 2021-01-03T00:00:00.000Z | 53          |
+| 3         | 2021-01-08T00:00:00.000Z | 1           |
+| 4         | 2021-01-15T00:00:00.000Z | 2           |
+
 
 ## 2.What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?  
 
