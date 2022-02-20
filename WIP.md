@@ -93,17 +93,36 @@ PIZZA_RUNNER.CUSTOMER_ORDERS;
 **Answer**
 The  number of unique customer orders is 5  
 
+## 3 How many successful orders were delivered by each runner?  
 
+If an order is not cancelled by the restaurant or the customer it denotes a succesful order and this information is in runner_orders table.
+
+The only problem is for few records null is hardcoded, so we need include this scenario in our where filter.
+
+```
+
+    SELECT count(*) as Number_Sucessful_Orders
+    FROM  pizza_runner.runner_orders 
+    where cancellation is null or cancellation='null';
+```
+
+| number_sucessful_orders |
+| ----------------------- |
+| 6                       |
+
+
+
+[View on DB Fiddle](https://www.db-fiddle.com/f/7VcQKQwsS3CTkGRFG7vu98/65)
 ## 4.How many of each type of pizza was delivered?  
 
 Join the `customer_orders` and `runner_orders` on `order_id` to get the data of `PIZZA_ID` and `CANCELLATION` in one place.
 
 Then use Where clause to filter out cancelled orders.  
 
-Then use Count along with group by to find how may pizza's were delivered in each type
+Then use Count along with group by to find how many pizza's were delivered in each type
 
 ```
-SELECT
+SELECT 
 PIZZA_ID
 ,COUNT(PIZZA_ID)
 FROM 
@@ -111,18 +130,18 @@ PIZZA_RUNNER.CUSTOMER_ORDERS
 INNER JOIN 
 PIZZA_RUNNER.RUNNER_ORDERS
 ON CUSTOMER_ORDERS.ORDER_ID = RUNNER_ORDERS.ORDER_ID
-WHERE CANCELLATION NOT IN ('RESTAURANT CANCELLATION','CUSTOMER CANCELLATION')
-GROUP BY PIZZA_ID;
+WHERE CANCELLATION IS NULL OR CANCELLATION = 'null'  
+GROUP BY PIZZA_ID
 ```
 
 | pizza_id | count |
 | -------- | ----- |
-| 2        | 1     |
-| 1        | 5     |
+| 1        | 7     |
+| 2        | 3     |
 
 **Answer**
-1. Pizza_id 1 was delivered 5 times  
-2. Pizza_id 2 was delivered 1 time
+1. Pizza_id 1(Meat Lovers) was delivered 7 times  
+2. Pizza_id 2(Vegetarian) was delivered 3 times
 
 ## 5.How many Vegetarian and Meatlovers were ordered by each customer?  
 
