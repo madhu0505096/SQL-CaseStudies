@@ -97,7 +97,7 @@ The  number of unique customer orders is 5
 
 If an order is not cancelled by the restaurant or the customer it denotes a succesful order and this information is in runner_orders table.
 
-The only problem is for few records null is hardcoded, so we need include this scenario in our where filter.
+The only problem is for few records null is hardcoded, so we need to include this scenario in our where filter.
 
 ```
 
@@ -195,7 +195,7 @@ with cte as(
     PIZZA_RUNNER.pizza_names
     on
     pizza_names.pizza_id = CUSTOMER_ORDERS.pizza_id
-    WHERE (cancellation NOT IN ('Restaurant Cancellation','Customer Cancellation') or cancellation is NULL)
+    WHERE (cancellation = 'null' or cancellation is NULL)
     group by CUSTOMER_ORDERS.ORDER_ID
     )
     select order_id,cnt from cte where cnt in (
@@ -223,33 +223,41 @@ Then find the number of orders which had the change using count() aggregate func
 
 ```
     with cte as(
-    select 
-         case when (exclusions ='' or exclusions is null or exclusions ='null') 
-      	and (extras ='' or extras ='null' or extras is null) then 'No Change' else 'Change' end as test       
-        
-        FROM 
-        PIZZA_RUNNER.CUSTOMER_ORDERS
-        INNER JOIN 
-        PIZZA_RUNNER.runner_orders
-        ON CUSTOMER_ORDERS.ORDER_ID = runner_orders.order_id
-        inner join 
-        PIZZA_RUNNER.pizza_names
-        on
-        pizza_names.pizza_id = CUSTOMER_ORDERS.pizza_id
-        WHERE (cancellation NOT IN ('Restaurant Cancellation','Customer Cancellation') 	   or cancellation is NULL)
-    ) 
-    select
-    test
-    ,count(test)
-    from cte
-    group by test;
+        select customer_id,
+             case when (exclusions ='' or exclusions is null or exclusions ='null') 
+          	and (extras ='' or extras ='null' or extras is null) then 'No Change' else 'Change' end as test       
+            
+            FROM 
+            PIZZA_RUNNER.CUSTOMER_ORDERS
+            INNER JOIN 
+            PIZZA_RUNNER.runner_orders
+            ON CUSTOMER_ORDERS.ORDER_ID = runner_orders.order_id
+            inner join 
+            PIZZA_RUNNER.pizza_names
+            on
+            pizza_names.pizza_id = CUSTOMER_ORDERS.pizza_id
+            WHERE (cancellation NOT IN ('Restaurant Cancellation','Customer Cancellation') 	   or cancellation is NULL)
+        ) 
+        select
+        customer_id
+        ,test
+        ,count(test)
+        from cte
+        group by test,customer_id;
 ```
-| test      | count |
-| --------- | ----- |
-| Change    | 6     |
-| No Change | 6     |
+
+| customer_id | test      | count |
+| ----------- | --------- | ----- |
+| 104         | Change    | 2     |
+| 103         | Change    | 3     |
+| 104         | No Change | 1     |
+| 105         | Change    | 1     |
+| 101         | No Change | 2     |
+| 102         | No Change | 3     |
 
 
+
+[View on DB Fiddle](https://www.db-fiddle.com/f/7VcQKQwsS3CTkGRFG7vu98/65)
 
 ## 8.How many pizzas were delivered that had both exclusions and extras?
 
