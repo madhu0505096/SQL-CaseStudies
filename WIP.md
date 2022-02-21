@@ -343,7 +343,7 @@ The below table shows the results from `isdow` and it's asscoicated day in the w
 ```
     SELECT 
     case when extract(isodow  from order_time) = 1 then 'Monday' 
-    when extract(isodow  from order_time) = 2 then 'Teuesday' 
+    when extract(isodow  from order_time) = 2 then 'Tuesday' 
     when extract(isodow  from order_time) = 3 then 'Wednesday' 
     when extract(isodow  from order_time) = 4 then 'Thursday' 
     when extract(isodow  from order_time) = 5 then 'Friday' 
