@@ -428,6 +428,28 @@ On week 1 two persons registered, on week 2 and 3 only one person registered.
 
 We need order time and pickup time to find the answer and both of these attributes are in different tables.So first we need to join the tables together and find the average time by calculating the difference.  
 
+```
+--Use epoch to get the seconds from the pickup time and ordertime difference
+SELECT  
+AVG(CAST( 
+  EXTRACT(EPOCH FROM (CAST(PICKUP_TIME AS TIMESTAMP) - ORDER_TIME  ) )
+  	AS INTEGER) 
+  /60)
+ ,RUNNER_ID
+
+FROM 
+PIZZA_RUNNER.RUNNER_ORDERS
+
+INNER JOIN 
+PIZZA_RUNNER.CUSTOMER_ORDERS
+
+ON RUNNER_ORDERS.ORDER_ID = CUSTOMER_ORDERS.ORDER_ID
+WHERE PICKUP_TIME != 'NULL'
+GROUP BY RUNNER_ID;		
+
+![image](https://user-images.githubusercontent.com/78327987/155070117-a6b72b25-e037-4566-9e5f-28f832496038.png)
+
+
 ## 3.Is there any relationship between the number of pizzas and how long the order takes to prepare?  
 
 
