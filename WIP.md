@@ -452,5 +452,46 @@ GROUP BY RUNNER_ID;
 
 ## 3.Is there any relationship between the number of pizzas and how long the order takes to prepare?  
 
+Using ntile analytical function we can split the preparation time into two buckets.
 
 
+---
+
+    select  
+    runner_orders.order_id
+    ,count(*) as total_orders
+    ,ntile(2) over (order by 
+    cast( 
+      extract(epoch from (cast(PICKUP_TIME as timestamp) - order_time  ) )
+      	as integer) 
+      /60) as bucket
+      ,cast( 
+      extract(epoch from (cast(PICKUP_TIME as timestamp) - order_time  ) )
+      	as integer) 
+      /60 as preptime
+      
+    FROM 
+    PIZZA_RUNNER.RUNNER_ORDERS
+    INNER JOIN 
+    PIZZA_RUNNER.CUSTOMER_ORDERS
+    ON RUNNER_ORDERS.ORDER_ID = CUSTOMER_ORDERS.ORDER_ID
+    WHERE PICKUP_TIME != 'null'
+    group by RUNNER_ORDERS.order_id, RUNNER_ORDERS.PICKUP_TIME, customer_ORDERS.order_time
+    order by total_orders desc;
+```
+| order_id | total_orders | bucket | preptime |
+| -------- | ------------ | ------ | -------- |
+| 4        | 3            | 2      | 29       |
+| 10       | 2            | 2      | 15       |
+| 3        | 2            | 2      | 21       |
+| 5        | 1            | 1      | 10       |
+| 2        | 1            | 1      | 10       |
+| 8        | 1            | 2      | 20       |
+| 7        | 1            | 1      | 10       |
+| 1        | 1            | 1      | 10       |
+
+**Answer**
+
+If there are more than one orders usually the prep time is more than 15 minutes.
+
+Yes there is a relationship between the number of orders and the preparation time.
