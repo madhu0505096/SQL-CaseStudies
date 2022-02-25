@@ -446,17 +446,15 @@ PIZZA_RUNNER.CUSTOMER_ORDERS
 ON RUNNER_ORDERS.ORDER_ID = CUSTOMER_ORDERS.ORDER_ID
 WHERE PICKUP_TIME != 'NULL'
 GROUP BY RUNNER_ID;		
-
+```
 ![image](https://user-images.githubusercontent.com/78327987/155070117-a6b72b25-e037-4566-9e5f-28f832496038.png)
-
 
 ## 3.Is there any relationship between the number of pizzas and how long the order takes to prepare?  
 
 Using ntile analytical function we can split the preparation time into two buckets.
 
 
----
-
+``` 
     select  
     runner_orders.order_id
     ,count(*) as total_orders
@@ -495,3 +493,40 @@ Using ntile analytical function we can split the preparation time into two bucke
 If there are more than one orders usually the prep time is more than 15 minutes.
 
 Yes there is a relationship between the number of orders and the preparation time.
+
+## 4.What was the average distance travelled for each customer?  
+
+Joining the customer and runner orders table would give us the required data to answer the question.  
+
+The distance attribute is of type varchar and inorder to do calcualtions on it we need to clean it.  
+
+Some fields has 'km' at the trailing end. We can use regexp_replace to replace the 'km' with blanks.  
+
+Then the attribute is casted as float inorder to do allow computation and then let's use ceiling to round it up to the highest value close to the decimal point.  
+
+---
+
+    select 
+    customer_id
+    ,ceiling(avg(cast(regexp_replace(runner_orders.distance,'km','','g')  as float))) -- g represents global which removes all matches if there are multiple'km' in the same attribute 
+    
+    from 
+    PIZZA_RUNNER.customer_orders
+    inner join 
+    PIZZA_RUNNER.runner_orders
+    on customer_orders.order_id = runner_orders.order_id
+    where distance != 'null'
+    group by customer_id;
+
+| customer_id | ceiling |
+| ----------- | ------- |
+| 101         | 20      |
+| 103         | 24      |
+| 104         | 10      |
+| 105         | 25      |
+| 102         | 17      |
+
+---
+
+
+## 5.What was the difference between the longest and shortest delivery times for all orders?
