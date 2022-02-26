@@ -530,3 +530,28 @@ Then the attribute is casted as float inorder to do allow computation and then l
 
 
 ## 5.What was the difference between the longest and shortest delivery times for all orders?
+
+The duration field gives the time taken by the driver to deliver the order when it is picked up from the headquaters.
+
+```
+    select 
+    cast(max(substring(duration,1,2)) as int) - cast( min(substring(duration,1,2)) as int) as Difference
+    from 
+    PIZZA_RUNNER.runner_orders
+    where duration != 'null';
+```
+| difference |
+| ---------- |
+| 30         |
+
+
+But we need to include the time taken for the driver to reach the headquaters to pickup the order because delivery time should be the time captured when the customer places the order and the food getting deliverd to the customer.  
+
+So we need to combine the customer_orders table and make use of order_time attribute.  
+
+Subtract order time and pickup time and convert it into seconds then add it to duration( in secs).  
+
+
+
+
+
