@@ -545,7 +545,9 @@ The duration field gives the time taken by the driver to deliver the order when 
 | 30         |
 
 
-But we need to include the time taken for the driver to reach the headquaters to pickup the order because delivery time should be the time captured when the customer places the order and the food getting deliverd to the customer.  
+If the delivery time is calculated from the point in time where an order is placed to the order being delivered to the customer i.e order placed + driver picking up order + delivery
+
+ we need to include the time taken for the driver to reach the headquaters to pickup the order because delivery time should be the time captured when the customer places the order and the food getting deliverd to the customer.  
 
 So we need to combine the customer_orders table and make use of order_time attribute.  
 
@@ -553,5 +555,28 @@ Subtract order time and pickup time and convert it into seconds then add it to d
 
 
 
+## 6.What was the average speed for each runner for each delivery and do you notice any trend for these values?
 
+```
+
+    select 
+        
+       avg(( cast(regexp_replace(runner_orders.distance,'km','','g') as float) /cast(substring(duration,1,2) as int) )*60)
+        ,count(*) as number_of_orders
+        
+        ,runner_orders.runner_id
+        from 
+        PIZZA_RUNNER.runner_orders
+        where duration != 'null'
+        group by 
+        runner_orders.runner_id
+        order by number_of_orders;
+
+| avg               | number_of_orders | runner_id |
+| ----------------- | ---------------- | --------- |
+| 40                | 1                | 3         |
+| 62.9              | 3                | 2         |
+| 45.53611111111111 | 4                | 1         |
+
+```
 
